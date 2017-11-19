@@ -1,0 +1,15 @@
+@import "../valo/valo";
+
+//$v-background-color: hsl(210, 0%, 98%) !default;
+
+@mixin talos {
+  @include valo;
+
+  .v-verticallayout-dashed {
+    border-style: dashed;
+  }
+
+  //.v-button-dashed {
+  //  border-style: dashed;
+  //}
+}
