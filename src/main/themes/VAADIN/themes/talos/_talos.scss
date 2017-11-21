@@ -12,4 +12,9 @@
   //.v-button-dashed {
   //  border-style: dashed;
   //}
+
+  .v-button-bright {
+    //@include valo-button-style($background-color: #ccccff);
+    opacity: 0.5;
+  }
 }
