@@ -1,5 +1,6 @@
 package com.eitraz.talos.frontend.view;
 
+import com.eitraz.talos.frontend.component.TimeSelect;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
@@ -102,9 +103,17 @@ public class DashboardView extends HorizontalLayout implements View {
         form.setMargin(false);
         form.setSizeFull();
 
-        TextField textField = new TextField("Name");
-        textField.setSizeFull();
-        form.addComponent(textField);
+        HorizontalLayout betweenTime = new HorizontalLayout(new TimeSelect(), new Label("and"), new TimeSelect());
+
+        // Align all labels
+        betweenTime.iterator().forEachRemaining(component -> {
+            if (component instanceof Label)
+                betweenTime.setComponentAlignment(component, Alignment.MIDDLE_CENTER);
+        });
+
+        betweenTime.setCaption("Time is between");
+//        betweenTime.setSpacing(false);
+        form.addComponent(betweenTime);
 
         VerticalLayout container = new VerticalLayout(form);
         container.setSizeFull();
@@ -115,6 +124,13 @@ public class DashboardView extends HorizontalLayout implements View {
         layout.addComponent(createAddNewPanel());
 
         return layout;
+    }
+
+    private Component leftAlignCaption(Component component) {
+        FormLayout formLayout = new FormLayout(component);
+        formLayout.setMargin(false);
+        formLayout.setSpacing(false);
+        return formLayout;
     }
 
     private Component createAddNewPanel() {
