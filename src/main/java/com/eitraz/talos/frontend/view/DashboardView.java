@@ -1,6 +1,6 @@
 package com.eitraz.talos.frontend.view;
 
-import com.eitraz.talos.frontend.component.TimeSelect;
+import com.eitraz.talos.frontend.flow.TimeIsBetween;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
@@ -94,43 +94,14 @@ public class DashboardView extends HorizontalLayout implements View {
 
     private Component createTestLayout(String title) {
         VerticalLayout layout = new VerticalLayout();
-        layout.setWidth(100, Unit.PERCENTAGE);
-        layout.setHeightUndefined();
         layout.setCaption(title);
         layout.addStyleName(ValoTheme.PANEL_WELL);
 
-        FormLayout form = new FormLayout();
-        form.setMargin(false);
-        form.setSizeFull();
-
-        HorizontalLayout betweenTime = new HorizontalLayout(new TimeSelect(), new Label("and"), new TimeSelect());
-
-        // Align all labels
-        betweenTime.iterator().forEachRemaining(component -> {
-            if (component instanceof Label)
-                betweenTime.setComponentAlignment(component, Alignment.MIDDLE_CENTER);
-        });
-
-        betweenTime.setCaption("Time is between");
-//        betweenTime.setSpacing(false);
-        form.addComponent(betweenTime);
-
-        VerticalLayout container = new VerticalLayout(form);
-        container.setSizeFull();
-        Panel panel = new Panel("A test panel", container);
-
-        layout.addComponent(panel);
-
+        layout.addComponent(new TimeIsBetween().create());
         layout.addComponent(createAddNewPanel());
 
         return layout;
-    }
 
-    private Component leftAlignCaption(Component component) {
-        FormLayout formLayout = new FormLayout(component);
-        formLayout.setMargin(false);
-        formLayout.setSpacing(false);
-        return formLayout;
     }
 
     private Component createAddNewPanel() {
