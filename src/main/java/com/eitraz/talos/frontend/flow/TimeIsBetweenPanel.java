@@ -6,12 +6,13 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 
 import java.time.Duration;
+import java.time.ZonedDateTime;
 
-public class TimeIsBetween extends AbstractFlowPanel {
+public class TimeIsBetweenPanel extends AbstractFlowPanel {
     private final TimeSelect start;
     private final TimeSelect end;
 
-    public TimeIsBetween() {
+    public TimeIsBetweenPanel() {
         start = TimeSelect.create(Duration.ofHours(-1));
         start.addTimeSelectionListener(t -> timeChanged());
 
@@ -32,7 +33,22 @@ public class TimeIsBetween extends AbstractFlowPanel {
         return layout;
     }
 
+    @Override
+    protected boolean isTrue() {
+        ZonedDateTime startTime = start.getSelectedTime();
+        ZonedDateTime endTime = end.getSelectedTime();
+
+        if (endTime.isBefore(startTime))
+            endTime = endTime.plusDays(1);
+
+        ZonedDateTime now = ZonedDateTime.now();
+
+        return startTime.isBefore(now) && now.isBefore(endTime);
+    }
+
     private void timeChanged() {
         System.out.println("Between: " + start.getSelectedTime() + " and " + end.getSelectedTime());
+        update();
     }
+
 }

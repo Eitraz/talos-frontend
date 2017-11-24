@@ -6,16 +6,22 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 
 public abstract class AbstractFlowPanel {
+    private HorizontalLayout panelCaption;
+
     protected abstract String getTitle();
 
     protected abstract Component getContent();
+
+    protected boolean isTrue() {
+        return false;
+    }
 
     public CssLayout create() {
         CssLayout layout = new CssLayout();
         layout.setSizeFull();
         layout.addStyleName(ValoTheme.LAYOUT_CARD);
 
-        HorizontalLayout panelCaption = new HorizontalLayout();
+        panelCaption = new HorizontalLayout();
         {
             panelCaption.setSpacing(false);
             panelCaption.addStyleName("v-panel-caption");
@@ -32,6 +38,15 @@ public abstract class AbstractFlowPanel {
         }
 
         layout.addComponents(panelCaption, new VerticalLayout(getContent()));
+
+        update();
         return layout;
+    }
+
+    public void update() {
+        if (isTrue())
+            panelCaption.addStyleName("green");
+        else
+            panelCaption.removeStyleName("green");
     }
 }

@@ -1,6 +1,9 @@
 package com.eitraz.talos.frontend.view;
 
-import com.eitraz.talos.frontend.flow.TimeIsBetween;
+import com.eitraz.talos.frontend.flow.SetDeviceStatusPanel;
+import com.eitraz.talos.frontend.flow.SunIsPanel;
+import com.eitraz.talos.frontend.flow.TimeIsBetweenPanel;
+import com.eitraz.talos.frontend.flow.TimerPanel;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
@@ -24,9 +27,9 @@ public class DashboardView extends HorizontalLayout implements View {
         setMargin(true);
         setSizeFull();
 
-        addComponent(createTestLayout("Given"));
-        addComponent(createTestLayout("When"));
-        addComponent(createTestLayout("Then"));
+        addComponent(createGivenLayout("Given"));
+        addComponent(createWhenLayout("When"));
+        addComponent(createThenLayout("Then"));
 
 
 //        addComponent(new Label("Whoho!"));
@@ -92,16 +95,38 @@ public class DashboardView extends HorizontalLayout implements View {
 //                });
     }
 
-    private Component createTestLayout(String title) {
+    private Component createGivenLayout(String title) {
         VerticalLayout layout = new VerticalLayout();
         layout.setCaption(title);
         layout.addStyleName(ValoTheme.PANEL_WELL);
 
-        layout.addComponent(new TimeIsBetween().create());
+        layout.addComponent(new TimerPanel().create());
         layout.addComponent(createAddNewPanel());
 
         return layout;
+    }
 
+    private Component createWhenLayout(String title) {
+        VerticalLayout layout = new VerticalLayout();
+        layout.setCaption(title);
+        layout.addStyleName(ValoTheme.PANEL_WELL);
+
+        layout.addComponent(new TimeIsBetweenPanel().create());
+        layout.addComponent(new SunIsPanel().create());
+        layout.addComponent(createAddNewPanel());
+
+        return layout;
+    }
+
+    private Component createThenLayout(String title) {
+        VerticalLayout layout = new VerticalLayout();
+        layout.setCaption(title);
+        layout.addStyleName(ValoTheme.PANEL_WELL);
+
+        layout.addComponent(new SetDeviceStatusPanel().create());
+        layout.addComponent(createAddNewPanel());
+
+        return layout;
     }
 
     private Component createAddNewPanel() {
