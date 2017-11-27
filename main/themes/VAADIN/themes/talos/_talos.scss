@@ -1,0 +1,43 @@
+@import "../valo/valo";
+
+//$v-background-color: hsl(210, 0%, 98%) !default;
+$v-font-size: 12px;
+
+//$v-unit-size: round(1.5 * $v-font-size);
+//$v-unit-size--small: 20px;
+//$v-unit-size--tiny: 18px;
+
+$v-layout-margin-top: round($v-unit-size/2);
+$v-layout-margin-right: round($v-unit-size/2);
+$v-layout-margin-bottom: round($v-unit-size/2);
+$v-layout-margin-left: round($v-unit-size/2);
+
+//$v-layout-spacing-vertical: round($v-unit-size/10);
+//$v-layout-spacing-horizontal: round($v-unit-size/10);
+
+@mixin talos {
+  @include valo;
+
+  .v-verticallayout-dashed {
+    border-style: dashed;
+  }
+
+  //.v-button-dashed {
+  //  border-style: dashed;
+  //}
+
+  .v-button-bright {
+    //@include valo-button-style($background-color: #ccccff);
+    opacity: 0.75;
+  }
+
+  //.v-caption-inline-label {
+  //  display: inline-block;
+  //}
+
+  $green: #3dbc1a;
+
+  .v-horizontallayout-green {
+    @include valo-panel-caption-style($background-color: $green);
+  }
+}
