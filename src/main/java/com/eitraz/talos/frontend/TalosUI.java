@@ -1,6 +1,7 @@
 package com.eitraz.talos.frontend;
 
 import com.eitraz.talos.frontend.view.ErrorView;
+import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.server.VaadinRequest;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @SpringUI
 @Theme("talos")
 @Title("Talos - Home Automation")
+@Push
 public class TalosUI extends UI {
     private final SpringViewProvider viewProvider;
     private final MainViewDisplay mainView;

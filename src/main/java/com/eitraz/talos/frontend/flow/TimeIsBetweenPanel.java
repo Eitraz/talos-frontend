@@ -1,16 +1,24 @@
 package com.eitraz.talos.frontend.flow;
 
 import com.eitraz.talos.frontend.component.TimeSelect;
+import com.eitraz.talos.frontend.util.TimeUtils;
+import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 
 import java.time.Duration;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 public class TimeIsBetweenPanel extends AbstractFlowPanel {
     private final TimeSelect start;
     private final TimeSelect end;
+    private Label currentTimeLabel;
+    private ZoneId zoneId;
 
     public TimeIsBetweenPanel() {
         start = TimeSelect.create(Duration.ofHours(-1));
@@ -34,6 +42,20 @@ public class TimeIsBetweenPanel extends AbstractFlowPanel {
     }
 
     @Override
+    public Optional<Component> getFooter() {
+        zoneId = TimeUtils.getZoneId();
+        currentTimeLabel = new Label("", ContentMode.HTML);
+        updateCurrentTime();
+        return Optional.of(new HorizontalLayout(currentTimeLabel));
+    }
+
+    private void updateCurrentTime() {
+        ZonedDateTime now = ZonedDateTime.now(zoneId);
+        String serverTime = now.format(DateTimeFormatter.ofPattern("HH:mm"));
+        currentTimeLabel.setValue("Current server time is <b>" + serverTime + "<b>.");
+    }
+
+    @Override
     protected boolean isTrue() {
         ZonedDateTime startTime = start.getSelectedTime();
         ZonedDateTime endTime = end.getSelectedTime();
@@ -47,7 +69,12 @@ public class TimeIsBetweenPanel extends AbstractFlowPanel {
     }
 
     private void timeChanged() {
-        update();
+        refresh();
     }
 
+    @Override
+    public synchronized void refresh() {
+        updateCurrentTime();
+        super.refresh();
+    }
 }

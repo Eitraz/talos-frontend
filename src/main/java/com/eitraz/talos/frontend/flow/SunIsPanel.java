@@ -1,10 +1,10 @@
 package com.eitraz.talos.frontend.flow;
 
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
+import com.vaadin.shared.ui.ContentMode;
+import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
+
+import java.util.Optional;
 
 public class SunIsPanel extends AbstractFlowPanel {
     @Override
@@ -34,5 +34,11 @@ public class SunIsPanel extends AbstractFlowPanel {
         layout.setComponentAlignment(to, Alignment.MIDDLE_CENTER);
 
         return layout;
+    }
+
+    @Override
+    public Optional<Component> getFooter() {
+        Label sunUpDownLabel = new Label("Today the sun rise at <b>08:16</b> and set at <b>20:43<b>.", ContentMode.HTML);
+        return Optional.of(new HorizontalLayout(sunUpDownLabel));
     }
 }

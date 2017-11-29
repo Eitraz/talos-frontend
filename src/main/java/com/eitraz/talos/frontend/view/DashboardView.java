@@ -4,95 +4,70 @@ import com.eitraz.talos.frontend.flow.SetDeviceStatusPanel;
 import com.eitraz.talos.frontend.flow.SunIsPanel;
 import com.eitraz.talos.frontend.flow.TimeIsBetweenPanel;
 import com.eitraz.talos.frontend.flow.TimerPanel;
+import com.eitraz.talos.frontend.util.Refresher;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
+import com.vaadin.navigator.ViewBeforeLeaveEvent;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
+import org.springframework.aop.target.dynamic.Refreshable;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @UIScope
 @SpringView
 public class DashboardView extends HorizontalLayout implements View {
-    @Override
-    public void enter(ViewChangeListener.ViewChangeEvent event) {
-    }
+    private ScheduledExecutorService executor;
 
     @PostConstruct
     void init() {
         setMargin(true);
         setSizeFull();
+    }
+
+    @Override
+    public void enter(ViewChangeListener.ViewChangeEvent event) {
+        removeAllComponents();
 
         addComponent(createGivenLayout("Given"));
         addComponent(createWhenLayout("When"));
         addComponent(createThenLayout("Then"));
 
+        executor = Executors.newSingleThreadScheduledExecutor();
+        executor.scheduleWithFixedDelay(new Refresher(getUI(), this::getRefreshableComponents),
+                15, 15, TimeUnit.SECONDS);
+    }
 
-//        addComponent(new Label("Whoho!"));
+    private List<Refreshable> getRefreshableComponents() {
+        return getRefreshableComponents(new ArrayList<>(), this);
+    }
 
+    private List<Refreshable> getRefreshableComponents(List<Refreshable> refreshables, Component component) {
+        if (component instanceof Refreshable)
+            refreshables.add((Refreshable) component);
 
-//        VerticalLayout dropTargetLayout = new VerticalLayout();
-//        dropTargetLayout.setCaption("Drop things inside me");
-//        dropTargetLayout.addStyleName(ValoTheme.LAYOUT_CARD);
-//
-//        // make the layout accept drops
-//        DropTargetExtension<VerticalLayout> dropTarget = new DropTargetExtension<>(dropTargetLayout);
-//
-//        // the drop effect must match the allowed effect in the drag source for a successful drop
-//        dropTarget.setDropEffect(DropEffect.MOVE);
-//
-//        // catch the drops
-//        dropTarget.addDropListener(event -> {
-//            // if the drag source is in the same UI as the target
-//            Optional<AbstractComponent> dragSource = event.getDragSourceComponent();
-//            if (dragSource.isPresent() && dragSource.get() instanceof Label) {
-//                // move the label to the layout
-//                dropTargetLayout.addComponent(dragSource.get());
-//
-//                // get possible transfer data
-//                event.getDataTransferData("text/html").ifPresent(s -> System.out.println("Transferred: " + s));
-////                if (message != null) {
-////                    Notification.show("DropEvent with data transfer html: " + message);
-////                } else {
-////                    // get transfer text
-////                    message = event.getDataTransferText();
-////                    Notification.show("DropEvent with data transfer text: " + message);
-////                }
-//
-//                // handle possible server side drag data, if the drag source was in the same UI
-//                event.getDragData().ifPresent(data -> System.out.println("Data: " + data));
-//            }
-//        });
-//
-//
-//        addComponent(dropTargetLayout);
-//
-//
-//
-//        Arrays.asList("Drag me", "And me", "Me to")
-//                .forEach(title -> {
-//                    Label label = new Label(title);
-//                    DragSourceExtension<Label> dragSource = new DragSourceExtension<>(label);
-//                    dragSource.setEffectAllowed(EffectAllowed.MOVE);
-//                    dragSource.setDataTransferText("hello receiver");
-//                    dragSource.setDataTransferData("text/html", "<label>hello receiver</label>");
-//
-//                    dragSource.addDragStartListener(event -> Notification.show("Drag event started"));
-//
-//                    dragSource.addDragEndListener(event -> {
-//                        if (event.isCanceled()) {
-//                            Notification.show("Drag event was canceled");
-//                        } else {
-//                            Notification.show("Drag event finished");
-//                        }
-//                    });
-//
-//                    dropTargetLayout.addComponent(label);
-//                });
+        if (component instanceof HasComponents) {
+            ((HasComponents) component).forEach(child -> getRefreshableComponents(refreshables, child));
+        }
+
+        return refreshables;
+    }
+
+    @Override
+    public void beforeLeave(ViewBeforeLeaveEvent event) {
+        if (executor != null) {
+            executor.shutdown();
+        }
+        event.navigate();
     }
 
     private Component createGivenLayout(String title) {

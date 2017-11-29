@@ -40,4 +40,12 @@ $v-layout-margin-left: round($v-unit-size/2);
   .v-horizontallayout-green {
     @include valo-panel-caption-style($background-color: $green);
   }
+
+  .v-panel-footer {
+    @include valo-panel-caption-style();
+    border-top: valo-border($strength: 0.7);
+    border-bottom: 0;
+    font-size: $v-font-size;
+    font-weight: $v-font-weight;
+  }
 }

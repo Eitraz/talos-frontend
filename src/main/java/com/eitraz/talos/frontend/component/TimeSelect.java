@@ -1,9 +1,8 @@
 package com.eitraz.talos.frontend.component;
 
+import com.eitraz.talos.frontend.util.TimeUtils;
 import com.vaadin.event.selection.SingleSelectionEvent;
 import com.vaadin.event.selection.SingleSelectionListener;
-import com.vaadin.server.Page;
-import com.vaadin.server.WebBrowser;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -13,7 +12,9 @@ import java.time.Duration;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAmount;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
@@ -75,23 +76,7 @@ public class TimeSelect extends HorizontalLayout implements SingleSelectionListe
     }
 
     public static TimeSelect create(TemporalAmount offset) {
-        WebBrowser webBrowser = Page.getCurrent().getWebBrowser();
-
-        List<String> availableIDs = Arrays.asList(TimeZone.getAvailableIDs(webBrowser.getTimezoneOffset()));
-        ZoneId systemDefaultZoneId = ZoneId.systemDefault();
-
-        ZoneId zoneId;
-
-        // Default
-        if (availableIDs.isEmpty() || availableIDs.contains(systemDefaultZoneId.getId())) {
-            zoneId = systemDefaultZoneId;
-        }
-        // First available
-        else {
-            zoneId = ZoneId.of(availableIDs.get(0));
-        }
-
-        return create(ZonedDateTime.now(zoneId).plus(offset));
+        return create(ZonedDateTime.now(TimeUtils.getZoneId()).plus(offset));
     }
 
     public static TimeSelect create(ZonedDateTime selectedTime) {

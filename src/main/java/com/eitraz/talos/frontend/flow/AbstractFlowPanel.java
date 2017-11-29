@@ -4,9 +4,15 @@ import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.Sizeable;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
+import org.springframework.aop.target.dynamic.Refreshable;
 
-public abstract class AbstractFlowPanel {
-    private HorizontalLayout panelCaption;
+import java.util.Optional;
+
+public abstract class AbstractFlowPanel extends CssLayout implements Refreshable {
+    private long refreshCount = 0;
+    private long lastRefreshTime = System.currentTimeMillis();
+
+    private HorizontalLayout header;
 
     protected abstract String getTitle();
 
@@ -16,37 +22,64 @@ public abstract class AbstractFlowPanel {
         return false;
     }
 
-    public CssLayout create() {
-        CssLayout layout = new CssLayout();
-        layout.setSizeFull();
-        layout.addStyleName(ValoTheme.LAYOUT_CARD);
+    public AbstractFlowPanel create() {
+        setSizeFull();
+        addStyleName(ValoTheme.LAYOUT_CARD);
 
-        panelCaption = new HorizontalLayout();
+        header = new HorizontalLayout();
         {
-            panelCaption.setSpacing(false);
-            panelCaption.addStyleName("v-panel-caption");
-            panelCaption.setWidth(100, Sizeable.Unit.PERCENTAGE);
+            header.setSpacing(false);
+            header.addStyleName("v-panel-caption");
+            header.setWidth(100, Sizeable.Unit.PERCENTAGE);
 
             Label label = new Label(getTitle());
-            panelCaption.addComponent(label);
-            panelCaption.setExpandRatio(label, 1);
+            header.addComponent(label);
+            header.setExpandRatio(label, 1);
 
             Button button = new Button();
             button.setIcon(VaadinIcons.TRASH);
             button.addStyleNames(ValoTheme.BUTTON_BORDERLESS_COLORED, ValoTheme.BUTTON_SMALL, ValoTheme.BUTTON_ICON_ONLY);
-            panelCaption.addComponent(button);
+            header.addComponent(button);
         }
 
-        layout.addComponents(panelCaption, new VerticalLayout(getContent()));
+        addComponents(header, new VerticalLayout(getContent()));
 
-        update();
-        return layout;
+        getFooter().ifPresent(component -> {
+            VerticalLayout footer = new VerticalLayout(component);
+            footer.setSpacing(false);
+            footer.setMargin(false);
+            footer.addStyleNames("v-panel-footer");
+            footer.setWidth(100, Sizeable.Unit.PERCENTAGE);
+
+            addComponent(footer);
+        });
+
+        refresh();
+        return this;
     }
 
-    public void update() {
+    public Optional<Component> getFooter() {
+        return Optional.empty();
+    }
+
+    @Override
+    public synchronized void refresh() {
         if (isTrue())
-            panelCaption.addStyleName("green");
+            header.addStyleName("green");
         else
-            panelCaption.removeStyleName("green");
+            header.removeStyleName("green");
+
+        refreshCount++;
+        lastRefreshTime = System.currentTimeMillis();
+    }
+
+    @Override
+    public long getRefreshCount() {
+        return refreshCount;
+    }
+
+    @Override
+    public long getLastRefreshTime() {
+        return lastRefreshTime;
     }
 }
