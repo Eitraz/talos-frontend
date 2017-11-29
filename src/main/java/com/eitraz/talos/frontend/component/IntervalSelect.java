@@ -6,10 +6,15 @@ import com.vaadin.ui.Notification;
 
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class IntervalSelect extends HorizontalLayout {
     private final boolean allowNegative;
     private final boolean allowZero;
+    private final ComboBox<Long> amount;
+    private final ComboBox<TemporalUnit> unit;
 
     public IntervalSelect() {
         this(false, false);
@@ -19,7 +24,7 @@ public class IntervalSelect extends HorizontalLayout {
         this.allowNegative = allowNegative;
         this.allowZero = allowZero;
 
-        ComboBox<Long> amount = new ComboBox<>();
+        amount = new ComboBox<>();
         amount.addStyleNames("numeric");
         amount.setEmptySelectionAllowed(false);
         amount.setNewItemHandler(string -> {
@@ -33,14 +38,21 @@ public class IntervalSelect extends HorizontalLayout {
             }
         });
 
+        List<Long> values;
+
         if (allowNegative)
-            amount.setItems(-45L, -30L, -20L, -10L, -5L, -2L, -1L, 1L, 2L, 5L, 10L, 15L, 20L, 30L, 45L);
+            values = Arrays.asList(-45L, -30L, -20L, -10L, -5L, -2L, -1L, 0L, 1L, 2L, 5L, 10L, 15L, 20L, 30L, 45L);
         else
-            amount.setItems(1L, 2L, 5L, 10L, 15L, 20L, 30L, 45L);
+            values = Arrays.asList(0L, 1L, 2L, 5L, 10L, 15L, 20L, 30L, 45L);
+
+        if (!allowZero)
+            values = values.stream().filter(v -> v != 0).collect(Collectors.toList());
 
         amount.setSelectedItem(5L);
+        amount.setItems(values);
+        amount.setPageLength(values.size());
 
-        ComboBox<TemporalUnit> unit = new ComboBox<>();
+        unit = new ComboBox<>();
         unit.addStyleName("time-unit");
         unit.setEmptySelectionAllowed(false);
         unit.setTextInputAllowed(false);
@@ -55,5 +67,16 @@ public class IntervalSelect extends HorizontalLayout {
                 allowNegative ? "" : " positive",
                 allowZero ? "" : ", zero is not allowed");
         Notification.show(message, Notification.Type.WARNING_MESSAGE);
+    }
+
+    public void setSelected(long amount, ChronoUnit unit) {
+        if (!allowNegative && amount < 0)
+            return;
+
+        if (!allowZero && amount == 0)
+            return;
+
+        this.amount.setSelectedItem(amount);
+        this.unit.setSelectedItem(unit);
     }
 }

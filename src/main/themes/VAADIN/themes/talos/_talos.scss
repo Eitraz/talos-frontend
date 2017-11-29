@@ -60,4 +60,8 @@ $v-layout-margin-left: round($v-unit-size/2);
   .v-filterselect-on-off {
     width: ceil($v-default-field-width/3);
   }
+
+  .v-filterselect-up-down {
+    width: ceil($v-default-field-width/2);
+  }
 }

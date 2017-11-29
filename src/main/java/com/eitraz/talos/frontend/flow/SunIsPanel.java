@@ -4,6 +4,7 @@ import com.eitraz.talos.frontend.component.IntervalSelect;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.*;
 
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 public class SunIsPanel extends AbstractFlowPanel {
@@ -16,6 +17,7 @@ public class SunIsPanel extends AbstractFlowPanel {
     protected VerticalLayout getContent() {
         // Up / down
         ComboBox<String> sunIs = new ComboBox<>();
+        sunIs.addStyleName("up-down");
         sunIs.setEmptySelectionAllowed(false);
         sunIs.setTextInputAllowed(false);
         sunIs.setItems("Up", "Down");
@@ -23,9 +25,11 @@ public class SunIsPanel extends AbstractFlowPanel {
 
         IntervalSelect sunriseOffset = new IntervalSelect(true, true);
         sunriseOffset.setCaption("Sunrise offset");
+        sunriseOffset.setSelected(0L, ChronoUnit.MINUTES);
 
-        IntervalSelect sunsetOffset = new IntervalSelect();
+        IntervalSelect sunsetOffset = new IntervalSelect(true, true);
         sunsetOffset.setCaption("Sunset offset");
+        sunsetOffset.setSelected(0L, ChronoUnit.MINUTES);
 
         FormLayout offsetLayout = new FormLayout(sunriseOffset, sunsetOffset);
         offsetLayout.setMargin(false);
