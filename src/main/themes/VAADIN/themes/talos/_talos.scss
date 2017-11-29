@@ -3,7 +3,7 @@
 //$v-background-color: hsl(210, 0%, 98%) !default;
 $v-font-size: 12px;
 
-//$v-unit-size: round(1.5 * $v-font-size);
+$v-unit-size: round(2.5 * $v-font-size);
 //$v-unit-size--small: 20px;
 //$v-unit-size--tiny: 18px;
 
@@ -47,5 +47,17 @@ $v-layout-margin-left: round($v-unit-size/2);
     border-bottom: 0;
     font-size: $v-font-size;
     font-weight: $v-font-weight;
+  }
+
+  .v-filterselect-time-unit {
+    width: ceil($v-default-field-width/2);
+  }
+
+  .v-filterselect-numeric {
+    width: ceil($v-default-field-width/2);
+  }
+
+  .v-filterselect-on-off {
+    width: ceil($v-default-field-width/3);
   }
 }

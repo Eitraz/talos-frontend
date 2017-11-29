@@ -1,8 +1,8 @@
 package com.eitraz.talos.frontend.flow;
 
+import com.eitraz.talos.frontend.component.IntervalSelect;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.*;
-import com.vaadin.ui.themes.ValoTheme;
 
 import java.util.Optional;
 
@@ -13,27 +13,24 @@ public class SunIsPanel extends AbstractFlowPanel {
     }
 
     @Override
-    protected HorizontalLayout getContent() {
+    protected VerticalLayout getContent() {
+        // Up / down
         ComboBox<String> sunIs = new ComboBox<>();
-        sunIs.addStyleName(ValoTheme.COMBOBOX_SMALL);
         sunIs.setEmptySelectionAllowed(false);
         sunIs.setTextInputAllowed(false);
         sunIs.setItems("Up", "Down");
         sunIs.setSelectedItem("Down");
 
-        Label to = new Label("to");
+        IntervalSelect sunriseOffset = new IntervalSelect(true, true);
+        sunriseOffset.setCaption("Sunrise offset");
 
-        ComboBox<String> status = new ComboBox<>();
-        status.addStyleName(ValoTheme.COMBOBOX_SMALL);
-        status.setEmptySelectionAllowed(false);
-        status.setTextInputAllowed(false);
-        status.setItems("On", "Off");
-        status.setSelectedItem("On");
+        IntervalSelect sunsetOffset = new IntervalSelect();
+        sunsetOffset.setCaption("Sunset offset");
 
-        HorizontalLayout layout = new HorizontalLayout(sunIs, to, status);
-        layout.setComponentAlignment(to, Alignment.MIDDLE_CENTER);
+        FormLayout offsetLayout = new FormLayout(sunriseOffset, sunsetOffset);
+        offsetLayout.setMargin(false);
 
-        return layout;
+        return new VerticalLayout(sunIs, offsetLayout);
     }
 
     @Override

@@ -60,7 +60,7 @@ public class TalosMenu extends CssLayout {
                 menu.addStyleNames("valo-menu-visible");
             }
         });
-        showMenu.addStyleNames(ValoTheme.BUTTON_PRIMARY, ValoTheme.BUTTON_SMALL, "valo-menu-toggle");
+        showMenu.addStyleNames(ValoTheme.BUTTON_PRIMARY, "valo-menu-toggle");
         showMenu.setIcon(VaadinIcons.LIST);
         menu.addComponent(showMenu);
 

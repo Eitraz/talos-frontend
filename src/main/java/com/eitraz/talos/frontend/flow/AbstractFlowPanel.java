@@ -38,7 +38,7 @@ public abstract class AbstractFlowPanel extends CssLayout implements Refreshable
 
             Button button = new Button();
             button.setIcon(VaadinIcons.TRASH);
-            button.addStyleNames(ValoTheme.BUTTON_BORDERLESS_COLORED, ValoTheme.BUTTON_SMALL, ValoTheme.BUTTON_ICON_ONLY);
+            button.addStyleNames(ValoTheme.BUTTON_BORDERLESS_COLORED, ValoTheme.BUTTON_ICON_ONLY);
             header.addComponent(button);
         }
 
