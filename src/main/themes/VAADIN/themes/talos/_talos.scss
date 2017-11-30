@@ -57,6 +57,16 @@ $v-layout-margin-left: round($v-unit-size/2);
   //  color: valo-font-color($bg);
   //}
 
+  .v-verticallayout-gwt-container {
+    //background-color: aqua;
+  }
+
+  .v-label-divider {
+    background-image: url("dotted.png");
+    background-repeat: repeat-x;
+    background-position: center;
+  }
+
   .v-filterselect-time-unit {
     width: ceil($v-default-field-width/2);
   }

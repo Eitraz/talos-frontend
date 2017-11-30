@@ -5,15 +5,18 @@ import com.eitraz.talos.frontend.flow.SunIsPanel;
 import com.eitraz.talos.frontend.flow.TimeIsBetweenPanel;
 import com.eitraz.talos.frontend.flow.TimerPanel;
 import com.eitraz.talos.frontend.util.Refresher;
-import com.vaadin.event.ShortcutAction;
-import com.vaadin.icons.VaadinIcons;
+import com.eitraz.talos.frontend.view.dashboard.AndOrPanel;
+import com.eitraz.talos.frontend.view.dashboard.GivenPanel;
+import com.eitraz.talos.frontend.view.dashboard.ThenPanel;
+import com.eitraz.talos.frontend.view.dashboard.WhenPanel;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewBeforeLeaveEvent;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.spring.annotation.UIScope;
-import com.vaadin.ui.*;
-import com.vaadin.ui.themes.ValoTheme;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.HasComponents;
+import com.vaadin.ui.HorizontalLayout;
 import org.springframework.aop.target.dynamic.Refreshable;
 
 import javax.annotation.PostConstruct;
@@ -38,9 +41,9 @@ public class DashboardView extends HorizontalLayout implements View {
     public void enter(ViewChangeListener.ViewChangeEvent event) {
         removeAllComponents();
 
-        addComponent(createGivenLayout("Given"));
-        addComponent(createWhenLayout("When"));
-        addComponent(createThenLayout("Then"));
+        addComponent(createGivenLayout());
+        addComponent(createWhenLayout());
+        addComponent(createThenLayout());
 
         executor = Executors.newSingleThreadScheduledExecutor();
         executor.scheduleWithFixedDelay(new Refresher(getUI(), this::getRefreshableComponents),
@@ -70,131 +73,45 @@ public class DashboardView extends HorizontalLayout implements View {
         event.navigate();
     }
 
-    private Component createGivenLayout(String title) {
-        VerticalLayout layout = new VerticalLayout();
-        layout.setMargin(false);
-        layout.setCaption(title);
+    private Component createGivenLayout() {
+        GivenPanel given = new GivenPanel();
 
-        layout.addComponent(
-                createPanelLayout(
+        given.addComponent(
+                new AndOrPanel(
                         new TimerPanel().create()
-                ));
+                )
+        );
 
-        layout.addComponent(
-                createPanelLayout(
+        given.addComponent(
+                new AndOrPanel(
                         new TimerPanel().create(),
-                        createPanelLayout(
-                                new TimerPanel().create()
-                        )
-                ));
+                        new AndOrPanel(new TimerPanel().create())
+                )
+        );
 
-        return layout;
+        return given;
     }
 
-    private Component createPanelLayout(Component... components) {
-        VerticalLayout layout = new VerticalLayout();
-        layout.addStyleName(ValoTheme.PANEL_WELL);
-        layout.addStyleName("wrapper");
+    private Component createWhenLayout() {
+        WhenPanel when = new WhenPanel();
 
-        if (components.length > 0) {
-            layout.addComponents(components);
-        }
-
-        createAddNewPanel();
-
-        return layout;
+        when.addComponent(
+                new AndOrPanel(
+                        new TimeIsBetweenPanel().create(),
+                        new SunIsPanel().create()
+                )
+        );
+        return when;
     }
 
-    private Component createWhenLayout(String title) {
-        VerticalLayout layout = new VerticalLayout();
-        layout.setCaption(title);
-        layout.addStyleName(ValoTheme.PANEL_WELL);
+    private Component createThenLayout() {
+        ThenPanel thenPanel = new ThenPanel();
 
-        layout.addComponent(new TimeIsBetweenPanel().create());
-        layout.addComponent(new SunIsPanel().create());
-        layout.addComponent(createAddNewPanel());
-
-        return layout;
-    }
-
-    private Component createThenLayout(String title) {
-        VerticalLayout layout = new VerticalLayout();
-        layout.setCaption(title);
-        layout.addStyleName(ValoTheme.PANEL_WELL);
-
-        layout.addComponent(new SetDeviceStatusPanel().create());
-        layout.addComponent(createAddNewPanel());
-
-        return layout;
-    }
-
-    private Component createAddNewPanel() {
-        Button button = new Button(VaadinIcons.PLUS_CIRCLE_O);
-        button.addStyleName(ValoTheme.BUTTON_ICON_ONLY);
-        button.addStyleName(ValoTheme.BUTTON_FRIENDLY);
-        button.addStyleName("bright");
-        button.setWidth(100, Unit.PERCENTAGE);
-        button.setHeight(40, Unit.PIXELS);
-
-        button.addClickListener(e -> new AddWindow().open());
-
-        return button;
-    }
-
-    private class AddWindow extends Window {
-        public AddWindow() {
-            super();
-
-            addCloseShortcut(ShortcutAction.KeyCode.ESCAPE, null);
-
-            setModal(true);
-            setClosable(false);
-            setResizable(false);
-
-            FormLayout form = new FormLayout();
-            {
-                Label section = new Label("Lorem Ipsum");
-                section.addStyleNames(ValoTheme.LABEL_H3, ValoTheme.LABEL_COLORED);
-                form.addComponent(section);
-
-                form.addComponent(new TextField("Name"));
-
-                form.setSizeUndefined();
-                form.setMargin(false);
-            }
-
-            Panel panel = new Panel(new VerticalLayout(form));
-            {
-                panel.addStyleName(ValoTheme.PANEL_BORDERLESS);
-                panel.addStyleName(ValoTheme.PANEL_SCROLL_INDICATOR);
-            }
-
-            HorizontalLayout footer = new HorizontalLayout();
-            {
-                Label footerText = new Label("");
-                footerText.setSizeUndefined();
-
-                Button ok = new Button("OK", event -> close());
-                ok.addStyleName(ValoTheme.BUTTON_PRIMARY);
-
-                Button cancel = new Button("Close", event -> close());
-
-                footer.addStyleName(ValoTheme.WINDOW_BOTTOM_TOOLBAR);
-                footer.setWidth(100, Unit.PERCENTAGE);
-                footer.addComponents(footerText, ok, cancel);
-                footer.setExpandRatio(footerText, 1);
-            }
-
-
-            VerticalLayout content = new VerticalLayout(panel, footer);
-            content.setExpandRatio(panel, 1);
-            setContent(content);
-        }
-
-        public void open() {
-            DashboardView.this.getUI().addWindow(this);
-            center();
-            focus();
-        }
+        thenPanel.addComponent(
+                new AndOrPanel(
+                        new SetDeviceStatusPanel().create()
+                )
+        );
+        return thenPanel;
     }
 }

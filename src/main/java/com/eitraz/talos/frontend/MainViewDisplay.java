@@ -16,6 +16,7 @@ public class MainViewDisplay extends Panel implements ViewDisplay {
 
     @PostConstruct
     void init() {
+        setSizeFull();
         setStyleName(ValoTheme.PANEL_BORDERLESS);
 //        setPrimaryStyleName("valo-content");
 //        addStyleName("v-scrollable");
