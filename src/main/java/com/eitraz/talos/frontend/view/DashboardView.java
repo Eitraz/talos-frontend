@@ -72,11 +72,35 @@ public class DashboardView extends HorizontalLayout implements View {
 
     private Component createGivenLayout(String title) {
         VerticalLayout layout = new VerticalLayout();
+        layout.setMargin(false);
         layout.setCaption(title);
-        layout.addStyleName(ValoTheme.PANEL_WELL);
 
-        layout.addComponent(new TimerPanel().create());
-        layout.addComponent(createAddNewPanel());
+        layout.addComponent(
+                createPanelLayout(
+                        new TimerPanel().create()
+                ));
+
+        layout.addComponent(
+                createPanelLayout(
+                        new TimerPanel().create(),
+                        createPanelLayout(
+                                new TimerPanel().create()
+                        )
+                ));
+
+        return layout;
+    }
+
+    private Component createPanelLayout(Component... components) {
+        VerticalLayout layout = new VerticalLayout();
+        layout.addStyleName(ValoTheme.PANEL_WELL);
+        layout.addStyleName("wrapper");
+
+        if (components.length > 0) {
+            layout.addComponents(components);
+        }
+
+        createAddNewPanel();
 
         return layout;
     }
@@ -110,7 +134,7 @@ public class DashboardView extends HorizontalLayout implements View {
         button.addStyleName(ValoTheme.BUTTON_FRIENDLY);
         button.addStyleName("bright");
         button.setWidth(100, Unit.PERCENTAGE);
-        button.setHeight(50, Unit.PIXELS);
+        button.setHeight(40, Unit.PIXELS);
 
         button.addClickListener(e -> new AddWindow().open());
 

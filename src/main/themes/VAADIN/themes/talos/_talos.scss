@@ -49,6 +49,14 @@ $v-layout-margin-left: round($v-unit-size/2);
     font-weight: $v-font-weight;
   }
 
+  //.v-verticallayout-wrapper {
+  //  @include valo-panel-well-style();
+  //
+  //  $bg: scale-color(adjust-color($v-background-color, $lightness: -1%), $saturation: -1.5%);
+  //  background: $bg;
+  //  color: valo-font-color($bg);
+  //}
+
   .v-filterselect-time-unit {
     width: ceil($v-default-field-width/2);
   }
@@ -59,6 +67,10 @@ $v-layout-margin-left: round($v-unit-size/2);
 
   .v-filterselect-on-off {
     width: ceil($v-default-field-width/3);
+  }
+
+  .v-filterselect-and-or {
+    width: ceil($v-default-field-width/2.5);
   }
 
   .v-filterselect-up-down {

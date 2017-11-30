@@ -32,6 +32,15 @@ public abstract class AbstractFlowPanel extends CssLayout implements Refreshable
             header.addStyleName("v-panel-caption");
             header.setWidth(100, Sizeable.Unit.PERCENTAGE);
 
+            ComboBox<String> test = new ComboBox<>();
+            test.addStyleName(ValoTheme.COMBOBOX_BORDERLESS);
+            test.addStyleName("and-or");
+            test.setTextInputAllowed(false);
+            test.setEmptySelectionAllowed(false);
+            test.setItems("And", "Or");
+            test.setSelectedItem("And");
+            header.addComponent(test);
+
             Label label = new Label(getTitle());
             header.addComponent(label);
             header.setExpandRatio(label, 1);

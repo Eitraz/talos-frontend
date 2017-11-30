@@ -34,7 +34,9 @@ public class SunIsPanel extends AbstractFlowPanel {
         FormLayout offsetLayout = new FormLayout(sunriseOffset, sunsetOffset);
         offsetLayout.setMargin(false);
 
-        return new VerticalLayout(sunIs, offsetLayout);
+        VerticalLayout layout = new VerticalLayout(sunIs, offsetLayout);
+        layout.setMargin(false);
+        return layout;
     }
 
     @Override
