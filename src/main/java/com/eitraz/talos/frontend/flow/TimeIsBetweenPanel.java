@@ -29,8 +29,14 @@ public class TimeIsBetweenPanel extends AbstractFlowPanel {
     }
 
     @Override
-    protected String getTitle() {
-        return "Time is between";
+    protected String getTitle(boolean collapsed) {
+        String title = "Time is between";
+
+        if (collapsed) {
+            title += " " + start.getSelectedTime().getHour() + ":" + start.getSelectedTime().getMinute() + " and " + end.getSelectedTime().getHour() + ":" + end.getSelectedTime().getMinute();
+        }
+
+        return title;
     }
 
     @Override

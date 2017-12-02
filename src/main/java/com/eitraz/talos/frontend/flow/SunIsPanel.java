@@ -8,15 +8,24 @@ import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 public class SunIsPanel extends AbstractFlowPanel {
+
+    private ComboBox<String> sunIs;
+
     @Override
-    protected String getTitle() {
-        return "Sun is";
+    protected String getTitle(boolean collapsed) {
+        String title = "Sun is";
+
+        if (collapsed) {
+            title += " " + String.valueOf(sunIs.getSelectedItem().get()).toLowerCase();
+        }
+
+        return title;
     }
 
     @Override
     protected VerticalLayout getContent() {
         // Up / down
-        ComboBox<String> sunIs = new ComboBox<>();
+        sunIs = new ComboBox<>();
         sunIs.addStyleName("up-down");
         sunIs.setEmptySelectionAllowed(false);
         sunIs.setTextInputAllowed(false);

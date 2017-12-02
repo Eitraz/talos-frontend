@@ -8,6 +8,7 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class IntervalSelect extends HorizontalLayout {
@@ -48,8 +49,8 @@ public class IntervalSelect extends HorizontalLayout {
         if (!allowZero)
             values = values.stream().filter(v -> v != 0).collect(Collectors.toList());
 
-        amount.setSelectedItem(5L);
         amount.setItems(values);
+        amount.setSelectedItem(5L);
         amount.setPageLength(values.size());
 
         unit = new ComboBox<>();
@@ -78,5 +79,13 @@ public class IntervalSelect extends HorizontalLayout {
 
         this.amount.setSelectedItem(amount);
         this.unit.setSelectedItem(unit);
+    }
+
+    public Optional<Long> getAmount() {
+        return amount.getSelectedItem();
+    }
+
+    public Optional<TemporalUnit> getUnit() {
+        return unit.getSelectedItem();
     }
 }

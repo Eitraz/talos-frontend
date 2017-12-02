@@ -13,8 +13,11 @@ public abstract class AbstractFlowPanel extends CssLayout implements Refreshable
     private long lastRefreshTime = System.currentTimeMillis();
 
     private HorizontalLayout header;
+    private VerticalLayout content;
+    private VerticalLayout footer;
+    private Label titleLabel;
 
-    protected abstract String getTitle();
+    protected abstract String getTitle(boolean collapsed);
 
     protected abstract Component getContent();
 
@@ -41,20 +44,36 @@ public abstract class AbstractFlowPanel extends CssLayout implements Refreshable
             andOr.setSelectedItem("And");
             header.addComponent(andOr);
 
-            Label label = new Label(getTitle());
-            header.addComponent(label);
-            header.setExpandRatio(label, 1);
+            titleLabel = new Label(getTitle(false));
+            header.addComponent(titleLabel);
+            header.setExpandRatio(titleLabel, 1);
 
-            Button button = new Button();
-            button.setIcon(VaadinIcons.TRASH);
-            button.addStyleNames(ValoTheme.BUTTON_BORDERLESS_COLORED, ValoTheme.BUTTON_ICON_ONLY);
-            header.addComponent(button);
+            Button trashButton = new Button();
+            trashButton.setIcon(VaadinIcons.TRASH);
+            trashButton.addStyleNames(ValoTheme.BUTTON_BORDERLESS_COLORED, ValoTheme.BUTTON_ICON_ONLY);
+            header.addComponent(trashButton);
+
+            Button collapseButton = new Button();
+            collapseButton.setIcon(VaadinIcons.CHEVRON_UP);
+            collapseButton.addStyleNames(ValoTheme.BUTTON_BORDERLESS_COLORED, ValoTheme.BUTTON_ICON_ONLY);
+            collapseButton.addClickListener(event -> {
+                collapseButton.setIcon(content.isVisible() ? VaadinIcons.CHEVRON_DOWN : VaadinIcons.CHEVRON_UP);
+                content.setVisible(!content.isVisible());
+
+                if (footer != null) {
+                    footer.setVisible(content.isVisible());
+                }
+
+                refresh();
+            });
+            header.addComponent(collapseButton);
         }
 
-        addComponents(header, new VerticalLayout(getContent()));
+        content = new VerticalLayout(getContent());
+        addComponents(header, content);
 
         getFooter().ifPresent(component -> {
-            VerticalLayout footer = new VerticalLayout(component);
+            footer = new VerticalLayout(component);
             footer.setSpacing(false);
             footer.setMargin(false);
             footer.addStyleNames("v-panel-footer");
@@ -73,6 +92,8 @@ public abstract class AbstractFlowPanel extends CssLayout implements Refreshable
 
     @Override
     public synchronized void refresh() {
+        titleLabel.setValue(getTitle(!content.isVisible()));
+
         if (isTrue())
             header.addStyleName("green");
         else
